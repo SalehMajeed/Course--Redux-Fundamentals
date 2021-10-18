@@ -1,10 +1,4 @@
-const initialState = {
-	todos: [
-		{ id: 0, text: 'Learn React', completed: true },
-		{ id: 1, text: 'Learn Redux', completed: false, color: 'purple' },
-		{ id: 2, text: 'Build something fun!', completed: false, color: 'blue' },
-	],
-};
+const initialState = [];
 
 function nextTodoId(todos) {
 	const maxId = todos.reduce((maxId, todo) => Math.max(todo.id, maxId), -1);
@@ -13,6 +7,9 @@ function nextTodoId(todos) {
 
 export default function todosReducer(state = initialState, action) {
 	switch (action.type) {
+		case 'todos/todosLoaded': {
+			return action.payload;
+		}
 		case 'todos/todoAdded': {
 			return [
 				...state,
@@ -34,7 +31,16 @@ export default function todosReducer(state = initialState, action) {
 				};
 			});
 		}
+		case 'todos/todosLoaded': {
+			return action.payload;
+		}
 		default:
 			return state;
 	}
+}
+
+export async function fetchTodos(dispatch, getState) {
+	const res = await fetch('https://fakestoreapi.com/products');
+	const data = await res.json();
+	dispatch({ type: 'todos/todosLoaded', payload: data.title });
 }
